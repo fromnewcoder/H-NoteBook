@@ -225,11 +225,11 @@ The page shall be divided into the following regions:
 
 | # | Question | Owner | Status |
 |---|---|---|---|
-| 1 | What is the maximum file size permitted for document uploads? | Product + Engineering | Open |
-| 2 | Should chat history persist indefinitely or have a retention policy? | Product | Open |
-| 3 | Are there internationalisation (i18n) requirements for v1.0? | Product | Open |
-| 4 | What user authentication mechanism will be used (SSO, email/password, etc.)? | Product + Engineering | Open |
-| 5 | Should the mind map export be a static image or an interactive file format? | Product | Open |
+| 1 | What is the maximum file size permitted for document uploads? | 10 MB.
+| 2 | Should chat history persist indefinitely or have a retention policy? | yes, chat history will be persist in the database.
+| 3 | Are there internationalisation (i18n) requirements for v1.0? | No, it uses English by default. 
+| 4 | What user authentication mechanism will be used (SSO, email/password, etc.)? | Simple username password first(with harded value, no register)
+| 5 | Should the mind map export be a static image or an interactive file format? | interactive file format
 
 ---
 
