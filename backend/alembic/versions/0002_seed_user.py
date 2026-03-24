@@ -10,9 +10,7 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from passlib.context import CryptContext
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+import bcrypt
 
 # revision identifiers, used by Alembic.
 revision: str = '0002'
@@ -24,7 +22,7 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     # Create seed user with default password
     # Password hash is for 'changeme123' - should be overridden via env var in production
-    hashed_pw = pwd_context.hash('changeme123')
+    hashed_pw = bcrypt.hashpw(b'changeme123', bcrypt.gensalt()).decode('utf-8')
     op.execute(f"""
         INSERT INTO users (id, username, hashed_pw)
         VALUES (

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./venv/Scripts/alembic upgrade:*)",
+      "Bash(./venv/Scripts/alembic stamp:*)",
+      "Bash(./venv/Scripts/python -c \":*)",
+      "Bash(docker run:*)"
+    ]
+  }
+}

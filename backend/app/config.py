@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     rag_top_k: int = 5
     rag_history_turns: int = 10
     max_upload_size_mb: int = 10
+    seed_user_password: str
 
     class Config:
         env_file = ".env"
