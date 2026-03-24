@@ -32,12 +32,17 @@ async def retrieve_relevant_chunks(
     query_embedding = embed_texts([query])[0]
 
     # Query ChromaDB
+    where_filter = {"source_id": {"$in": [str(sid) for sid in source_ids]}}
+    print(f"[DEBUG] ChromaDB query: notebook={notebook_id}, source_ids={[str(s) for s in source_ids]}, filter={where_filter}")
+
     results = collection.query(
         query_embeddings=[query_embedding],
         n_results=settings.rag_top_k,
-        where={"source_id": {"$in": [str(sid) for sid in source_ids]}},
+        where=where_filter,
         include=["documents", "metadatas", "distances"]
     )
+
+    print(f"[DEBUG] ChromaDB raw results: {results}")
 
     chunks = []
     if results and results.get("documents") and results["documents"][0]:
@@ -48,6 +53,7 @@ async def retrieve_relevant_chunks(
                 "distance": results["distances"][0][i] if results.get("distances") else 0
             })
 
+    print(f"[DEBUG] ChromaDB chunks: {len(chunks)}")
     return chunks
 
 
@@ -77,7 +83,7 @@ def build_prompt(query: str, chunks: list[dict], history: list[ChatMessage]) -> 
     # Build conversation history
     history_lines = []
     for msg in history:
-        role = "User" if msg.role == MessageRole.USER else "Assistant"
+        role = "User" if msg.role == MessageRole.user else "Assistant"
         history_lines.append(f"{role}: {msg.content}")
 
     history_section = "\n".join(history_lines) if history_lines else "No previous messages."
