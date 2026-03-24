@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { FileText, Network, FileWord, Presentation, Table, Download } from 'lucide-react';
+import { FileText, Network, Presentation, Table, Download } from 'lucide-react';
 import { createExport, getExportStatus, downloadExport } from '../../api/exports';
 import StatusBadge from '../shared/StatusBadge';
 
 const exportFormats = [
   { value: 'pdf', label: 'Summary PDF', icon: FileText },
   { value: 'mind_map', label: 'Mind Map', icon: Network },
-  { value: 'docx', label: 'Word', icon: FileWord },
+  { value: 'docx', label: 'Word', icon: FileText },
   { value: 'pptx', label: 'PowerPoint', icon: Presentation },
   { value: 'xlsx', label: 'Excel', icon: Table },
 ];

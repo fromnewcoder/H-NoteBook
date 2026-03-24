@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Globe, FileText, FileCode, FileWord, Trash2, Check } from 'lucide-react';
+import { Globe, FileText, FileCode, Trash2, Check } from 'lucide-react';
 import StatusBadge from '../shared/StatusBadge';
 import { deleteSource, getSourceStatus } from '../../api/sources';
 import useNotebookStore from '../../store/notebookStore';
@@ -8,7 +8,7 @@ const sourceIcons = {
   url: Globe,
   txt: FileText,
   md: FileCode,
-  docx: FileWord,
+  docx: FileText,
 };
 
 export default function SourceItem({ source, notebookId, isSelected, onToggle }) {

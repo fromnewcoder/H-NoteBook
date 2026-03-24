@@ -21,3 +21,4 @@ python-multipart==0.0.9
 chardet==5.2.0
 markdown-it-py==3.0.0
 redis==5.0.0
+numpy<2
