@@ -60,7 +60,7 @@ async def send_message(
         db,
         notebook_id,
         ChatMessageCreate(
-            role=MessageRole.USER,
+            role=MessageRole.user,
             content=request.content,
             source_ids=request.selected_source_ids
         )
@@ -87,7 +87,7 @@ async def send_message(
                         db,
                         notebook_id,
                         ChatMessageCreate(
-                            role=MessageRole.ASSISTANT,
+                            role=MessageRole.assistant,
                             content=full_response,
                             source_ids=request.selected_source_ids
                         )

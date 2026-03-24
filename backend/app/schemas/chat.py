@@ -1,6 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 from enum import Enum
+from typing import Literal
 
 from pydantic import BaseModel
 

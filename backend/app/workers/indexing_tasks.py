@@ -1,5 +1,5 @@
+import asyncio
 import os
-import tempfile
 from uuid import UUID
 
 from app.workers.celery_app import celery_app
@@ -19,12 +19,22 @@ from app.database import async_session_maker
 # Ensure all models are imported before SQLAlchemy relationships are resolved
 from app.models import user, notebook, source, chat_message, export_job  # noqa: F401
 
+# Persistent event loop for the worker process
+_loop = None
+
+
+def _get_or_create_event_loop():
+    """Get or create a persistent event loop for this process."""
+    global _loop
+    if _loop is None or _loop.is_closed():
+        _loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(_loop)
+    return _loop
+
 
 @celery_app.task(bind=True)
 def index_source_task(self, source_id: str, source_type: str, url: str = None, file_path: str = None):
     """Index a source document into ChromaDB."""
-    import asyncio
-
     async def _index():
         from sqlalchemy import select
         from app.models.source import Source
@@ -62,9 +72,9 @@ def index_source_task(self, source_id: str, source_type: str, url: str = None, f
                     raise ValueError(f"Unknown source type: {source_type}")
 
                 # Step 2: Chunk text
-                chunks = chunk_text(raw_text)
+                chunks = chunk_text(raw_text or "")
                 if not chunks:
-                    raise ValueError("No content extracted")
+                    raise ValueError(f"No content extracted (raw_text length: {len(raw_text) if raw_text else 0})")
 
                 # Step 3: Embed chunks
                 embeddings = embed_texts(chunks)
@@ -117,4 +127,6 @@ def index_source_task(self, source_id: str, source_type: str, url: str = None, f
                 if file_path and os.path.exists(file_path):
                     os.remove(file_path)
 
-    asyncio.run(_index())
+    # Use persistent event loop instead of asyncio.run()
+    loop = _get_or_create_event_loop()
+    loop.run_until_complete(_index())
