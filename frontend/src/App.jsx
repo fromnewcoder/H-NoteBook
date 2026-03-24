@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
@@ -13,10 +13,16 @@ function ProtectedRoute({ children }) {
 
 function App() {
   const { checkAuth } = useAuthStore();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
     checkAuth();
+    setIsCheckingAuth(false);
   }, []);
+
+  if (isCheckingAuth) {
+    return null; // or a loading spinner
+  }
 
   return (
     <BrowserRouter>
