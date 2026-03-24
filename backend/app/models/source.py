@@ -27,10 +27,10 @@ class Source(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     notebook_id = Column(UUID(as_uuid=True), ForeignKey("notebooks.id", ondelete="CASCADE"), nullable=False)
-    source_type = Column(Enum(SourceType), nullable=False)
+    source_type = Column(Enum(SourceType, name='source_type', values_callable=lambda obj: [e.value for e in obj]), nullable=False)
     name = Column(String(512), nullable=False)
     raw_content = Column(Text)
-    status = Column(Enum(SourceStatus), nullable=False, default=SourceStatus.PROCESSING)
+    status = Column(Enum(SourceStatus, name='source_status', values_callable=lambda obj: [e.value for e in obj]), nullable=False, default=SourceStatus.PROCESSING)
     error_message = Column(Text)
     chunk_count = Column(Integer, default=0)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)

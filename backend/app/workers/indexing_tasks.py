@@ -16,6 +16,10 @@ from app.models.source import SourceStatus
 from app.database import async_session_maker
 
 
+# Ensure all models are imported before SQLAlchemy relationships are resolved
+from app.models import user, notebook, source, chat_message, export_job  # noqa: F401
+
+
 @celery_app.task(bind=True)
 def index_source_task(self, source_id: str, source_type: str, url: str = None, file_path: str = None):
     """Index a source document into ChromaDB."""
