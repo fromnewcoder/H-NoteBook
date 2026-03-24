@@ -53,7 +53,7 @@ export default function ChatPanel({ messages, onSendMessage, streaming, hasSourc
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto space-y-4 mb-4">
+        <div className="flex-1 overflow-y-auto space-y-4 mb-4 max-h-[calc(100vh-320px)]">
           {messages.map((message) => (
             <ChatMessage key={message.id} message={message} />
           ))}
