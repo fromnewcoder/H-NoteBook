@@ -4,7 +4,11 @@
       "Bash(./venv/Scripts/alembic upgrade:*)",
       "Bash(./venv/Scripts/alembic stamp:*)",
       "Bash(./venv/Scripts/python -c \":*)",
-      "Bash(docker run:*)"
+      "Bash(docker run:*)",
+      "Bash(pip index:*)",
+      "Bash(pip install:*)",
+      "Bash(./venv/Scripts/python.exe -c \"import numpy; print\\(numpy.__version__\\)\")",
+      "Bash(./venv/Scripts/pip.exe install:*)"
     ]
   }
 }

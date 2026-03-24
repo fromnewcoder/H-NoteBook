@@ -92,7 +92,7 @@ async def send_message(
                             source_ids=request.selected_source_ids
                         )
                     )
-                    yield f"data: {json.dumps({'type': 'done', 'message_id': str(assistant_msg.id)}}\n\n"
+                    yield f"data: {json.dumps({'type': 'done', 'message_id': str(assistant_msg.id)})}\n\n"
                 elif token.get("type") == "error":
                     yield f"data: {json.dumps({'type': 'error', 'content': token.get('content')})}\n\n"
         except Exception as e:
