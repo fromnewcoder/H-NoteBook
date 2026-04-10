@@ -20,7 +20,7 @@ H-NoteBook is a full-stack web application that allows users to create notebooks
 | Layer | Technology |
 |-------|------------|
 | Frontend | React 18, Vite, Tailwind CSS, Zustand, React Router |
-| Backend | Python 3.11, FastAPI, SQLAlchemy 2.0 (async) |
+| Backend | Python 3.14, FastAPI, SQLAlchemy 2.0 (async) |
 | Database | PostgreSQL 16, ChromaDB (vector store) |
 | Task Queue | Celery + Redis |
 | AI | MiniMax 2.7 API (Anthropic-compatible), Sentence Transformers |
