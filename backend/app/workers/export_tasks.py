@@ -93,7 +93,7 @@ async def generate_export_content(format: str, content: str) -> str:
 
     prompt = prompts.get(format, "") + content[:10000]  # Limit content size
 
-    async with httpx.AsyncClient(timeout=120.0) as client:
+    async with httpx.AsyncClient(timeout=300.0) as client:
         payload = {
             "model": settings.minimax_model,
             "messages": [{"role": "user", "content": prompt}],
