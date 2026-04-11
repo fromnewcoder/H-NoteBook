@@ -183,7 +183,10 @@ async def render_export_file(job_id: str, format: str, content: str) -> str:
         for edge in data.get("edges", []):
             net.add_edge(edge.get("from", "1"), edge.get("to", "1"), label=edge.get("label", ""))
 
-        net.save_graph(file_path)
+        # pyvis requires .html extension
+        html_path = file_path + ".html"
+        net.save_graph(html_path)
+        return html_path
 
     elif format == "docx":
         from docx import Document
