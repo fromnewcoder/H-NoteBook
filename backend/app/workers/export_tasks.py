@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 import httpx
@@ -6,6 +7,19 @@ from uuid import UUID
 from app.workers.celery_app import celery_app
 from app.models.export_job import JobStatus, ExportFormat
 from app.config import settings
+
+
+# Persistent event loop for the worker process
+_loop = None
+
+
+def _get_or_create_event_loop():
+    """Get or create a persistent event loop for this process."""
+    global _loop
+    if _loop is None or _loop.is_closed():
+        _loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(_loop)
+    return _loop
 
 
 @celery_app.task(bind=True)
@@ -63,7 +77,8 @@ def run_export_task(self, job_id: str, notebook_id: str, format: str):
                 )
                 raise
 
-    asyncio.run(_export())
+    loop = _get_or_create_event_loop()
+    loop.run_until_complete(_export())
 
 
 async def generate_export_content(format: str, content: str) -> str:
@@ -98,7 +113,12 @@ async def generate_export_content(format: str, content: str) -> str:
         response.raise_for_status()
 
         result = response.json()
-        return result.get("content", "")
+        content = result.get("content", None)
+        if content and isinstance(content, list):
+            for block in content:
+                if block.get("type") == "text":
+                    return block.get("text", "")
+        return ""
 
 
 async def render_export_file(job_id: str, format: str, content: str) -> str:
