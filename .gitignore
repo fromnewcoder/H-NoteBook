@@ -27,6 +27,9 @@ dist/
 *.swp
 *.swo
 
+# Claude Code
+.claude/
+
 # Logs
 *.log
 logs/
