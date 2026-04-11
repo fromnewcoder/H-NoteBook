@@ -11,7 +11,7 @@ const sourceIcons = {
   docx: FileText,
 };
 
-export default function SourceItem({ source, notebookId, isSelected, onToggle }) {
+export default function SourceItem({ source, notebookId, isSelected, onToggle, onViewSummary }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const { setSources } = useNotebookStore();
 
@@ -56,16 +56,17 @@ export default function SourceItem({ source, notebookId, isSelected, onToggle })
 
   return (
     <div
-      className={`flex items-center gap-2 p-2 rounded-lg border transition ${
+      onClick={canSelect ? onViewSummary : undefined}
+      className={`flex items-center gap-2 p-2 rounded-lg border transition cursor-pointer ${
         canSelect
           ? isSelected
             ? 'border-indigo-400 bg-indigo-50'
             : 'border-gray-200 hover:border-gray-300'
-          : 'border-gray-200 opacity-60'
+          : 'border-gray-200 opacity-60 cursor-default'
       }`}
     >
       <button
-        onClick={onToggle}
+        onClick={(e) => { e.stopPropagation(); onToggle(); }}
         disabled={!canSelect}
         className={`w-5 h-5 rounded border flex items-center justify-center transition ${
           isSelected
@@ -88,7 +89,7 @@ export default function SourceItem({ source, notebookId, isSelected, onToggle })
       </div>
 
       <button
-        onClick={handleDelete}
+        onClick={(e) => { e.stopPropagation(); handleDelete(); }}
         disabled={isDeleting}
         className="p-1 hover:bg-red-50 rounded transition disabled:opacity-50"
         title="Delete source"

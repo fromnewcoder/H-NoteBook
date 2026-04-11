@@ -30,6 +30,7 @@ class SourceResponse(BaseModel):
     status: SourceStatus
     chunk_count: int = 0
     error_message: str | None = None
+    summary: str | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -41,3 +42,4 @@ class SourceStatusResponse(BaseModel):
     status: SourceStatus
     chunk_count: int = 0
     error_message: str | None = None
+    summary: str | None = None

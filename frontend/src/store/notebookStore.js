@@ -10,6 +10,7 @@ const useNotebookStore = create((set, get) => ({
   currentNotebook: null,
   sources: [],
   selectedSourceIds: new Set(),
+  selectedSource: null,
   messages: [],
   isLoading: false,
   error: null,
@@ -33,6 +34,10 @@ const useNotebookStore = create((set, get) => ({
   },
 
   setMessages: (messages) => set({ messages }),
+
+  setSelectedSource: (source) => set({ selectedSource: source }),
+
+  clearSelectedSource: () => set({ selectedSource: null }),
 
   addMessage: (message) => set((state) => ({
     messages: [...state.messages, message],

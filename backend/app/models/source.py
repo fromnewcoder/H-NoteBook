@@ -30,6 +30,7 @@ class Source(Base):
     source_type = Column(Enum(SourceType, name='source_type', values_callable=lambda obj: [e.value for e in obj]), nullable=False)
     name = Column(String(512), nullable=False)
     raw_content = Column(Text)
+    summary = Column(Text)
     status = Column(Enum(SourceStatus, name='source_status', values_callable=lambda obj: [e.value for e in obj]), nullable=False, default=SourceStatus.PROCESSING)
     error_message = Column(Text)
     chunk_count = Column(Integer, default=0)

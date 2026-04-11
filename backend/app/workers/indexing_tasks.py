@@ -2,6 +2,8 @@ import asyncio
 import os
 from uuid import UUID
 
+import httpx
+
 from app.workers.celery_app import celery_app
 from app.utils.parsers.url_parser import parse_url
 from app.utils.parsers.txt_parser import parse_txt
@@ -11,6 +13,7 @@ from app.utils.chunker import chunk_text
 from app.utils.embedder import embed_texts
 from app.utils.chroma_client import get_or_create_collection
 from app.models.source import SourceStatus
+from app.config import settings
 
 # Import database setup for tasks
 from app.database import async_session_maker
@@ -21,6 +24,43 @@ from app.models import user, notebook, source, chat_message, export_job  # noqa:
 
 # Persistent event loop for the worker process
 _loop = None
+
+
+async def generate_source_summary(text: str) -> str | None:
+    """Generate a concise summary of the source content using MiniMax API."""
+    if not text or len(text.strip()) < 50:
+        return None
+
+    prompt = (
+        "You are a helpful assistant. Please provide a concise summary of the following content "
+        "in 2-3 sentences. Focus on the main topic and key points.\n\n"
+        f"Content:\n{text[:8000]}"
+    )
+
+    try:
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            payload = {
+                "model": settings.minimax_model,
+                "messages": [{"role": "user", "content": prompt}],
+                "stream": False
+            }
+
+            headers = {
+                "Authorization": f"Bearer {settings.minimax_api_key}",
+                "Content-Type": "application/json"
+            }
+
+            response = await client.post(
+                f"{settings.minimax_api_base_url}/v1/messages",
+                json=payload,
+                headers=headers
+            )
+            response.raise_for_status()
+
+            result = response.json()
+            return result.get("content", None)
+    except Exception:
+        return None
 
 
 def _get_or_create_event_loop():
@@ -71,6 +111,9 @@ def index_source_task(self, source_id: str, source_type: str, url: str = None, f
                 else:
                     raise ValueError(f"Unknown source type: {source_type}")
 
+                # Step 1.5: Generate summary
+                summary = await generate_source_summary(raw_text or "")
+
                 # Step 2: Chunk text
                 chunks = chunk_text(raw_text or "")
                 if not chunks:
@@ -108,7 +151,8 @@ def index_source_task(self, source_id: str, source_type: str, url: str = None, f
                     UUID(source_id),
                     SourceStatus.READY,
                     raw_content=raw_text,
-                    chunk_count=len(chunks)
+                    chunk_count=len(chunks),
+                    summary=summary
                 )
 
             except (Exception, OSError) as e:

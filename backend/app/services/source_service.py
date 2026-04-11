@@ -49,7 +49,8 @@ async def update_source_status(
     status: SourceStatus,
     raw_content: str | None = None,
     chunk_count: int = 0,
-    error_message: str | None = None
+    error_message: str | None = None,
+    summary: str | None = None
 ) -> Source | None:
     """Update source status after processing."""
     result = await db.execute(select(Source).where(Source.id == source_id))
@@ -64,6 +65,8 @@ async def update_source_status(
         source.chunk_count = chunk_count
     if error_message is not None:
         source.error_message = error_message
+    if summary is not None:
+        source.summary = summary
 
     await db.commit()
     await db.refresh(source)
@@ -97,5 +100,6 @@ async def get_source_status(db: AsyncSession, source_id: UUID) -> SourceStatusRe
     return SourceStatusResponse(
         status=source.status,
         chunk_count=source.chunk_count,
-        error_message=source.error_message
+        error_message=source.error_message,
+        summary=source.summary
     )

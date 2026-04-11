@@ -21,3 +21,5 @@ chardet==5.2.0
 markdown-it-py==3.0.0
 redis==5.0.0
 numpy>=2.0
+pytest>=8.0
+pytest-asyncio>=0.23.0

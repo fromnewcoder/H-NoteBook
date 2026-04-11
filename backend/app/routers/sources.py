@@ -32,6 +32,7 @@ async def list_sources(
             status=SourceStatus(s.status.value),
             chunk_count=s.chunk_count,
             error_message=s.error_message,
+            summary=s.summary,
             created_at=s.created_at,
             updated_at=s.updated_at
         )
@@ -80,6 +81,7 @@ async def create_source(
         source_type=SourceType(source.source_type.value),
         status=SourceStatus(source.status.value),
         chunk_count=source.chunk_count,
+        summary=source.summary,
         created_at=source.created_at,
         updated_at=source.updated_at
     )
