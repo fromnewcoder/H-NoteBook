@@ -28,7 +28,8 @@
       "Bash(./venv/Scripts/python.exe -c \"from pydantic_settings import BaseSettings; print\\('OK'\\)\")",
       "Bash(./venv/Scripts/python.exe -c \"from pydantic_settings import BaseSettings; print\\('pydantic OK'\\)\")",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(docker-compose up:*)"
     ]
   }
 }

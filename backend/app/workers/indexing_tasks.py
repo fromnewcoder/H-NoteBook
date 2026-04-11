@@ -111,7 +111,7 @@ def index_source_task(self, source_id: str, source_type: str, url: str = None, f
                     chunk_count=len(chunks)
                 )
 
-            except Exception as e:
+            except (Exception, OSError) as e:
                 # Update with error status
                 from app.services.source_service import update_source_status
                 await update_source_status(

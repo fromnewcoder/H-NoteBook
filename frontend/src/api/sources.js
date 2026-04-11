@@ -6,12 +6,11 @@ export const listSources = async (notebookId) => {
 };
 
 export const createSourceURL = async (notebookId, url) => {
-  const response = await api.post(`/notebooks/${notebookId}/sources`, {
-    source_type: 'url',
-    url,
-  }, {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  const formData = new FormData();
+  formData.append('source_type', 'url');
+  formData.append('url', url);
+
+  const response = await api.post(`/notebooks/${notebookId}/sources`, formData);
   return response.data;
 };
 
