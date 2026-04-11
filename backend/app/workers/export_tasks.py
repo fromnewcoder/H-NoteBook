@@ -122,14 +122,22 @@ async def generate_export_content(format: str, content: str) -> str:
         if content and isinstance(content, list):
             for block in content:
                 if block.get("type") == "text":
-                    return block.get("text", "")
+                    text = block.get("text", "")
+                    # Strip markdown code fences if present
+                    text = text.strip()
+                    if text.startswith("```json"):
+                        text = text[7:]  # Remove ```json prefix
+                    if text.startswith("```"):
+                        text = text[3:]  # Remove ``` prefix
+                    if text.endswith("```"):
+                        text = text[:-3]  # Remove ``` suffix
+                    return text.strip()
 
         # Handle direct string content
         if isinstance(content, str):
             return content
 
         # Log unexpected format for debugging
-        import logging
         logging.warning(f"Unexpected MiniMax API content format: {result}")
 
         return ""
