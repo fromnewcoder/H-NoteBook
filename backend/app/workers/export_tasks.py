@@ -114,10 +114,21 @@ async def generate_export_content(format: str, content: str) -> str:
 
         result = response.json()
         content = result.get("content", None)
+
+        # Handle list of blocks format (MiniMax API standard format)
         if content and isinstance(content, list):
             for block in content:
                 if block.get("type") == "text":
                     return block.get("text", "")
+
+        # Handle direct string content
+        if isinstance(content, str):
+            return content
+
+        # Log unexpected format for debugging
+        import logging
+        logging.warning(f"Unexpected MiniMax API content format: {result}")
+
         return ""
 
 
