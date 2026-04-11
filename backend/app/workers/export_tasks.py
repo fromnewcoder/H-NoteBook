@@ -173,8 +173,13 @@ async def render_export_file(job_id: str, format: str, content: str) -> str:
         from pyvis.network import Network
 
         net = Network(height="750px", width="100%", directed=True)
-        net.add_node("1", label=data.get("nodes", [{"id": "1", "label": "Topic"}])[0].get("label", "Topic"))
 
+        # Add all nodes first
+        nodes = data.get("nodes", [{"id": "1", "label": "Topic"}])
+        for node in nodes:
+            net.add_node(node.get("id", "1"), label=node.get("label", "Topic"))
+
+        # Then add all edges
         for edge in data.get("edges", []):
             net.add_edge(edge.get("from", "1"), edge.get("to", "1"), label=edge.get("label", ""))
 
