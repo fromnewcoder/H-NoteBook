@@ -1,6 +1,24 @@
-import { FileText, Clock } from 'lucide-react';
+import { useState } from 'react';
+import { FileText, Clock, Trash2 } from 'lucide-react';
+import useNotebookStore from '../../store/notebookStore';
 
 export default function NotebookCard({ notebook, onClick }) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const deleteNotebook = useNotebookStore((state) => state.deleteNotebook);
+
+  const handleDelete = async (e) => {
+    e.stopPropagation();
+    if (isDeleting) return;
+    setIsDeleting(true);
+    try {
+      await deleteNotebook(notebook.id);
+    } catch (err) {
+      console.error('Error deleting notebook:', err);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -19,6 +37,14 @@ export default function NotebookCard({ notebook, onClick }) {
         <div className="bg-indigo-50 p-2 rounded-lg group-hover:bg-indigo-100 transition">
           <FileText className="w-5 h-5 text-indigo-600" />
         </div>
+        <button
+          onClick={handleDelete}
+          disabled={isDeleting}
+          className="p-1.5 hover:bg-red-50 rounded-lg transition disabled:opacity-50 opacity-0 group-hover:opacity-100"
+          title="Delete notebook"
+        >
+          <Trash2 className="w-4 h-4 text-red-500" />
+        </button>
       </div>
       <h3 className="font-semibold text-gray-800 mb-1 truncate">{notebook.title}</h3>
       <div className="flex items-center justify-between text-sm text-gray-500">

@@ -58,7 +58,12 @@ async def generate_source_summary(text: str) -> str | None:
             response.raise_for_status()
 
             result = response.json()
-            return result.get("content", None)
+            content = result.get("content", None)
+            if content and isinstance(content, list):
+                for block in content:
+                    if block.get("type") == "text":
+                        return block.get("text")
+            return None
     except Exception:
         return None
 
