@@ -113,6 +113,9 @@ async def generate_export_content(format: str, content: str) -> str:
         response.raise_for_status()
 
         result = response.json()
+        import logging
+        logging.warning(f"MiniMax API response: {result}")
+
         content = result.get("content", None)
 
         # Handle list of blocks format (MiniMax API standard format)
