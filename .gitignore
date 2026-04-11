@@ -45,3 +45,5 @@ alembic/versions/*.pyc
 
 # Uvicorn
 *.pid
+
+*.whl

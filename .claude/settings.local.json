@@ -8,7 +8,27 @@
       "Bash(pip index:*)",
       "Bash(pip install:*)",
       "Bash(./venv/Scripts/python.exe -c \"import numpy; print\\(numpy.__version__\\)\")",
-      "Bash(./venv/Scripts/pip.exe install:*)"
+      "Bash(./venv/Scripts/pip.exe install:*)",
+      "Bash(pip --version)",
+      "Bash(./venv/Scripts/python.exe --version)",
+      "Bash(./venv/Scripts/pip.exe --version)",
+      "Bash(py --list)",
+      "Bash(pip download:*)",
+      "Bash(./venv/Scripts/pip.exe index:*)",
+      "Bash(./venv/Scripts/pip.exe download:*)",
+      "Bash(./venv/Scripts/python.exe -c \"import chromadb; from chromadb.config import Settings; c = chromadb.PersistentClient\\(path='./test_chroma', settings=Settings\\(anonymized_telemetry=False\\)\\); print\\('API OK:', type\\(c\\)\\)\")",
+      "Bash(./venv/Scripts/python.exe -c \"import fastapi, uvicorn, sqlalchemy, asyncpg, celery, chromadb, numpy; print\\('All OK - numpy:', numpy.__version__\\)\")",
+      "Bash(./venv/Scripts/python.exe -c \"import fastapi, uvicorn, sqlalchemy, asyncpg, celery, chromadb, numpy; print\\('All OK - numpy:', numpy.__version__, 'sqlalchemy:', sqlalchemy.__version__\\)\")",
+      "Bash(./venv/Scripts/python.exe -c \"from app.main import app; print\\('App loaded OK'\\)\")",
+      "Bash(./venv/Scripts/python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000)",
+      "Bash(./venv/Scripts/python.exe -c \"import httpx; r = httpx.get\\('http://localhost:8000/docs', timeout=5\\); print\\('Status:', r.status_code\\)\")",
+      "Bash(./venv/Scripts/pip.exe show:*)",
+      "Bash(timeout 5 ./venv/Scripts/celery.exe -A app.workers.celery_app worker --loglevel=info)",
+      "Bash(timeout 5 ./venv/Scripts/celery.exe -A app.workers.celery_app:celery_app worker --loglevel=info)",
+      "Bash(./venv/Scripts/python.exe -c \"from pydantic_settings import BaseSettings; print\\('OK'\\)\")",
+      "Bash(./venv/Scripts/python.exe -c \"from pydantic_settings import BaseSettings; print\\('pydantic OK'\\)\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
