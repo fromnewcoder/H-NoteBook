@@ -1,0 +1,74 @@
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Collecting langfuse
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/2b/63/77bd7220dfd60885a272a851f780b3f83e0f653ee3a852347552c3e24a28/langfuse-4.5.1-py3-none-any.whl (479 kB)
+Requirement already satisfied: httpx<1.0,>=0.15.4 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from langfuse) (0.28.1)
+Requirement already satisfied: pydantic<3,>=2 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from langfuse) (2.12.5)
+Collecting backoff>=1.10.0 (from langfuse)
+  Using cached https://pypi.tuna.tsinghua.edu.cn/packages/df/73/b6e24bd22e6720ca8ee9a85a0c4a2971af8497d8f3193fa05390cbd46e09/backoff-2.2.1-py3-none-any.whl (15 kB)
+Collecting wrapt<2,>=1.14 (from langfuse)
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/db/c8/b71eeb192c440d67a5a0449aaee2310a1a1e8eca41676046f99ed2487e9f/wrapt-1.17.3-cp314-cp314-win_amd64.whl (39 kB)
+Requirement already satisfied: packaging<27.0,>=23.2 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from langfuse) (24.2)
+Requirement already satisfied: opentelemetry-api<2,>=1.33.1 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from langfuse) (1.40.0)
+Requirement already satisfied: opentelemetry-sdk<2,>=1.33.1 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from langfuse) (1.40.0)
+Collecting opentelemetry-exporter-otlp-proto-http<2,>=1.33.1 (from langfuse)
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/ba/4d/ef07ff2fc630849f2080ae0ae73a61f67257905b7ac79066640bfa0c5739/opentelemetry_exporter_otlp_proto_http-1.41.1-py3-none-any.whl (22 kB)
+Requirement already satisfied: anyio in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from httpx<1.0,>=0.15.4->langfuse) (4.13.0)
+Requirement already satisfied: certifi in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from httpx<1.0,>=0.15.4->langfuse) (2026.2.25)
+Requirement already satisfied: httpcore==1.* in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from httpx<1.0,>=0.15.4->langfuse) (1.0.9)
+Requirement already satisfied: idna in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from httpx<1.0,>=0.15.4->langfuse) (3.11)
+Requirement already satisfied: h11>=0.16 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from httpcore==1.*->httpx<1.0,>=0.15.4->langfuse) (0.16.0)
+Requirement already satisfied: importlib-metadata<8.8.0,>=6.0 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from opentelemetry-api<2,>=1.33.1->langfuse) (8.7.1)
+Requirement already satisfied: typing-extensions>=4.5.0 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from opentelemetry-api<2,>=1.33.1->langfuse) (4.15.0)
+Requirement already satisfied: zipp>=3.20 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from importlib-metadata<8.8.0,>=6.0->opentelemetry-api<2,>=1.33.1->langfuse) (3.23.0)
+Requirement already satisfied: googleapis-common-protos~=1.52 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from opentelemetry-exporter-otlp-proto-http<2,>=1.33.1->langfuse) (1.74.0)
+Collecting opentelemetry-exporter-otlp-proto-common==1.41.1 (from opentelemetry-exporter-otlp-proto-http<2,>=1.33.1->langfuse)
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/29/48/bce76d3ea772b609757e9bc844e02ab408a6446609bf74fb562062ba6b71/opentelemetry_exporter_otlp_proto_common-1.41.1-py3-none-any.whl (18 kB)
+Collecting opentelemetry-proto==1.41.1 (from opentelemetry-exporter-otlp-proto-http<2,>=1.33.1->langfuse)
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e4/1e/5cd77035e3e82070e2265a63a760f715aacd3cb16dddc7efee913f297fcc/opentelemetry_proto-1.41.1-py3-none-any.whl (72 kB)
+Collecting opentelemetry-sdk<2,>=1.33.1 (from langfuse)
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/b4/e7/a1420b698aad018e1cf60fdbaaccbe49021fb415e2a0d81c242f4c518f54/opentelemetry_sdk-1.41.1-py3-none-any.whl (180 kB)
+Requirement already satisfied: requests~=2.7 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from opentelemetry-exporter-otlp-proto-http<2,>=1.33.1->langfuse) (2.33.1)
+Requirement already satisfied: protobuf<7.0,>=5.0 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from opentelemetry-proto==1.41.1->opentelemetry-exporter-otlp-proto-http<2,>=1.33.1->langfuse) (6.33.6)
+Collecting opentelemetry-api<2,>=1.33.1 (from langfuse)
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/29/59/3e7118ed140f76b0982ba4321bdaed1997a0473f9720de2d10788a577033/opentelemetry_api-1.41.1-py3-none-any.whl (69 kB)
+Collecting opentelemetry-semantic-conventions==0.62b1 (from opentelemetry-sdk<2,>=1.33.1->langfuse)
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/eb/a6/83dc2ab6fa397ee66fba04fe2e74bdf7be3b3870005359ceb7689103c058/opentelemetry_semantic_conventions-0.62b1-py3-none-any.whl (231 kB)
+Requirement already satisfied: annotated-types>=0.6.0 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from pydantic<3,>=2->langfuse) (0.7.0)
+Requirement already satisfied: pydantic-core==2.41.5 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from pydantic<3,>=2->langfuse) (2.41.5)
+Requirement already satisfied: typing-inspection>=0.4.2 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from pydantic<3,>=2->langfuse) (0.4.2)
+Requirement already satisfied: charset_normalizer<4,>=2 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from requests~=2.7->opentelemetry-exporter-otlp-proto-http<2,>=1.33.1->langfuse) (3.4.7)
+Requirement already satisfied: urllib3<3,>=1.26 in C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from requests~=2.7->opentelemetry-exporter-otlp-proto-http<2,>=1.33.1->langfuse) (2.6.3)
+Installing collected packages: wrapt, opentelemetry-proto, backoff, opentelemetry-exporter-otlp-proto-common, opentelemetry-api, opentelemetry-semantic-conventions, opentelemetry-sdk, opentelemetry-exporter-otlp-proto-http, langfuse
+  Attempting uninstall: wrapt
+    Found existing installation: wrapt 2.1.2
+    Uninstalling wrapt-2.1.2:
+      Successfully uninstalled wrapt-2.1.2
+  Attempting uninstall: opentelemetry-proto
+    Found existing installation: opentelemetry-proto 1.40.0
+    Uninstalling opentelemetry-proto-1.40.0:
+      Successfully uninstalled opentelemetry-proto-1.40.0
+  Attempting uninstall: opentelemetry-exporter-otlp-proto-common
+    Found existing installation: opentelemetry-exporter-otlp-proto-common 1.40.0
+    Uninstalling opentelemetry-exporter-otlp-proto-common-1.40.0:
+      Successfully uninstalled opentelemetry-exporter-otlp-proto-common-1.40.0
+  Attempting uninstall: opentelemetry-api
+    Found existing installation: opentelemetry-api 1.40.0
+    Uninstalling opentelemetry-api-1.40.0:
+      Successfully uninstalled opentelemetry-api-1.40.0
+  Attempting uninstall: opentelemetry-semantic-conventions
+    Found existing installation: opentelemetry-semantic-conventions 0.61b0
+    Uninstalling opentelemetry-semantic-conventions-0.61b0:
+      Successfully uninstalled opentelemetry-semantic-conventions-0.61b0
+  Attempting uninstall: opentelemetry-sdk
+    Found existing installation: opentelemetry-sdk 1.40.0
+    Uninstalling opentelemetry-sdk-1.40.0:
+      Successfully uninstalled opentelemetry-sdk-1.40.0
+
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+opentelemetry-exporter-otlp-proto-grpc 1.40.0 requires opentelemetry-exporter-otlp-proto-common==1.40.0, but you have opentelemetry-exporter-otlp-proto-common 1.41.1 which is incompatible.
+opentelemetry-exporter-otlp-proto-grpc 1.40.0 requires opentelemetry-proto==1.40.0, but you have opentelemetry-proto 1.41.1 which is incompatible.
+opentelemetry-exporter-otlp-proto-grpc 1.40.0 requires opentelemetry-sdk~=1.40.0, but you have opentelemetry-sdk 1.41.1 which is incompatible.
+Successfully installed backoff-2.2.1 langfuse-4.5.1 opentelemetry-api-1.41.1 opentelemetry-exporter-otlp-proto-common-1.41.1 opentelemetry-exporter-otlp-proto-http-1.41.1 opentelemetry-proto-1.41.1 opentelemetry-sdk-1.41.1 opentelemetry-semantic-conventions-0.62b1 wrapt-1.17.3
+
+[notice] A new release of pip is available: 26.0.1 -> 26.1
+[notice] To update, run: C:\Users\swq\AppData\Local\Python\pythoncore-3.14-64\python.exe -m pip install --upgrade pip

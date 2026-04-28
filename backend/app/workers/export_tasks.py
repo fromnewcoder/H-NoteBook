@@ -7,6 +7,7 @@ from uuid import UUID
 from app.workers.celery_app import celery_app
 from app.models.export_job import JobStatus, ExportFormat
 from app.config import settings
+from app.tracing import get_langfuse
 
 
 # Persistent event loop for the worker process
@@ -26,6 +27,13 @@ def _get_or_create_event_loop():
 def run_export_task(self, job_id: str, notebook_id: str, format: str):
     """Run an export job."""
     import asyncio
+
+    langfuse = get_langfuse()
+    span = langfuse.span(
+        name="run_export_task",
+        input={"job_id": job_id, "notebook_id": notebook_id, "format": format},
+        metadata={"celery_task_id": self.request.id}
+    )
 
     async def _export():
         from sqlalchemy import select
@@ -61,7 +69,7 @@ def run_export_task(self, job_id: str, notebook_id: str, format: str):
                 )
 
                 # Generate export using MiniMax API
-                export_content = await generate_export_content(format, combined_content)
+                export_content = await generate_export_content(format, combined_content, job_id, notebook_id)
 
                 # Render file
                 file_path = await render_export_file(job_id, format, export_content)
@@ -78,10 +86,15 @@ def run_export_task(self, job_id: str, notebook_id: str, format: str):
                 raise
 
     loop = _get_or_create_event_loop()
-    loop.run_until_complete(_export())
+    try:
+        loop.run_until_complete(_export())
+        span.end()
+    except Exception as e:
+        span.end(error=str(e))
+        raise
 
 
-async def generate_export_content(format: str, content: str) -> str:
+async def generate_export_content(format: str, content: str, job_id: str | None = None, notebook_id: str | None = None) -> str:
     """Generate structured content using MiniMax API."""
     prompts = {
         "pdf": "Generate a structured summary report with title, abstract, and key findings sections based on the following content. Return only the structured content in plain text format:\n\n",
@@ -92,6 +105,18 @@ async def generate_export_content(format: str, content: str) -> str:
     }
 
     prompt = prompts.get(format, "") + content[:10000]  # Limit content size
+
+    langfuse = get_langfuse()
+    generation = langfuse.generation(
+        name="export_generation",
+        input={"format": format, "content_length": len(content)},
+        metadata={
+            "job_id": job_id,
+            "notebook_id": notebook_id,
+            "format": format,
+            "model": settings.minimax_model,
+        }
+    )
 
     async with httpx.AsyncClient(timeout=300.0) as client:
         payload = {
@@ -117,6 +142,7 @@ async def generate_export_content(format: str, content: str) -> str:
         logging.warning(f"MiniMax API response: {result}")
 
         content = result.get("content", None)
+        output_content = ""
 
         # Handle list of blocks format (MiniMax API standard format)
         if content and isinstance(content, list):
@@ -131,16 +157,18 @@ async def generate_export_content(format: str, content: str) -> str:
                         text = text[3:]  # Remove ``` prefix
                     if text.endswith("```"):
                         text = text[:-3]  # Remove ``` suffix
-                    return text.strip()
+                    output_content = text.strip()
 
         # Handle direct string content
-        if isinstance(content, str):
-            return content
+        elif isinstance(content, str):
+            output_content = content
 
         # Log unexpected format for debugging
-        logging.warning(f"Unexpected MiniMax API content format: {result}")
+        else:
+            logging.warning(f"Unexpected MiniMax API content format: {result}")
 
-        return ""
+        generation.end(output=output_content)
+        return output_content
 
 
 async def render_export_file(job_id: str, format: str, content: str) -> str:

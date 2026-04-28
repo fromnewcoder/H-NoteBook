@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     rag_top_k: int = 5
     rag_history_turns: int = 10
     max_upload_size_mb: int = 10
+    langfuse_public_key: str = ""
+    langfuse_secret_key: str = ""
+    langfuse_host: str = "http://localhost:3000"
+    langfuse_trace: bool = True
     seed_user_password: str
 
     class Config:

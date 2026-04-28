@@ -14,6 +14,7 @@ H-NoteBook is a full-stack web application that allows users to create notebooks
 - **Export**: Generate Summary PDF, Mind Map, Word, PowerPoint, and Excel exports
 - **Persistent Storage**: PostgreSQL for relational data, ChromaDB for vector embeddings
 - **JWT Authentication**: Secure token-based auth with Redis blocklist
+- **Observability**: Langfuse tracing for all LLM calls with debugging and LLM-as-a-judge evaluations
 
 ## Tech Stack
 
@@ -24,6 +25,7 @@ H-NoteBook is a full-stack web application that allows users to create notebooks
 | Database | PostgreSQL 16, ChromaDB (vector store) |
 | Task Queue | Celery + Redis |
 | AI | MiniMax 2.7 API (Anthropic-compatible), Sentence Transformers |
+| Observability | Langfuse (tracing, debugging, LLM-as-a-judge evaluations) |
 
 ## Project Structure
 
@@ -35,12 +37,14 @@ h-notebook/
 │   │   ├── config.py         # Pydantic settings
 │   │   ├── database.py       # Async SQLAlchemy engine
 │   │   ├── dependencies.py   # Auth dependencies
+│   │   ├── tracing.py        # Langfuse client singleton
 │   │   ├── models/           # SQLAlchemy ORM models
 │   │   ├── schemas/          # Pydantic schemas
 │   │   ├── routers/          # API route handlers
 │   │   ├── services/         # Business logic
 │   │   ├── workers/          # Celery tasks
-│   │   └── utils/            # Parsers, chunker, embedder
+│   │   ├── utils/            # Parsers, chunker, embedder
+│   │   └── evaluations/      # LLM-as-a-judge evaluation triggers
 │   ├── alembic/              # Database migrations
 │   ├── tests/
 │   ├── Dockerfile
@@ -78,6 +82,9 @@ REDIS_URL=redis://localhost:6379/0
 JWT_SECRET_KEY=your-secret-key-here
 MINIMAX_API_KEY=your-api-key
 MINIMAX_API_BASE_URL=https://api.minimaxi.com/anthropic
+LANGFUSE_PUBLIC_KEY=pk-lf-...
+LANGFUSE_SECRET_KEY=sk-lf-...
+LANGFUSE_HOST=http://localhost:3000
 ```
 
 ### 2. Start Services

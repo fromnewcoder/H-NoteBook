@@ -9,6 +9,7 @@ from app.config import settings
 from app.models.chat_message import ChatMessage, MessageRole
 from app.schemas.chat import ChatMessageCreate
 from app.services import rag_service
+from app.tracing import get_langfuse
 
 
 async def create_message(db: AsyncSession, notebook_id: UUID, data: ChatMessageCreate) -> ChatMessage:
@@ -38,7 +39,8 @@ async def get_messages(db: AsyncSession, notebook_id: UUID) -> list[ChatMessage]
 async def stream_chat_response(
     notebook_id: UUID,
     query: str,
-    source_ids: list[UUID]
+    source_ids: list[UUID],
+    user_id: str | None = None
 ):
     """Generate chat response using MiniMax API with streaming."""
     # Check if sources are ready
@@ -51,6 +53,20 @@ async def stream_chat_response(
     # (We need a db session here - this would be passed in production)
 
     prompt = rag_service.build_prompt(query, chunks, [])
+
+    # Trace with Langfuse
+    langfuse = get_langfuse()
+    generation = langfuse.generation(
+        name="chat",
+        input={"query": query, "source_count": len(source_ids)},
+        metadata={
+            "notebook_id": str(notebook_id),
+            "user_id": user_id,
+            "model": settings.minimax_model,
+        }
+    )
+
+    full_response = ""
 
     # Call MiniMax API
     async with httpx.AsyncClient(timeout=120.0) as client:
@@ -82,8 +98,11 @@ async def stream_chat_response(
                         if event.get("type") == "content_block_delta":
                             delta = event.get("delta", {})
                             if delta.get("type") == "text_delta":
-                                yield {"type": "token", "content": delta.get("text", "")}
+                                token_text = delta.get("text", "")
+                                full_response += token_text
+                                yield {"type": "token", "content": token_text}
                     except json.JSONDecodeError:
                         continue
 
             yield {"type": "done"}
+    generation.end(output=full_response)

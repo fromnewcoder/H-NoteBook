@@ -14,6 +14,7 @@ from app.utils.embedder import embed_texts
 from app.utils.chroma_client import get_or_create_collection
 from app.models.source import SourceStatus
 from app.config import settings
+from app.tracing import get_langfuse
 
 # Import database setup for tasks
 from app.database import async_session_maker
@@ -26,7 +27,7 @@ from app.models import user, notebook, source, chat_message, export_job  # noqa:
 _loop = None
 
 
-async def generate_source_summary(text: str) -> str | None:
+async def generate_source_summary(text: str, source_id: str | None = None, notebook_id: str | None = None) -> str | None:
     """Generate a concise summary of the source content using MiniMax API."""
     if not text or len(text.strip()) < 50:
         return None
@@ -35,6 +36,17 @@ async def generate_source_summary(text: str) -> str | None:
         "You are a helpful assistant. Please provide a concise summary of the following content "
         "in 2-3 sentences. Focus on the main topic and key points.\n\n"
         f"Content:\n{text[:8000]}"
+    )
+
+    langfuse = get_langfuse()
+    generation = langfuse.generation(
+        name="source_summary",
+        input={"text_length": len(text)},
+        metadata={
+            "source_id": source_id,
+            "notebook_id": notebook_id,
+            "model": settings.minimax_model,
+        }
     )
 
     try:
@@ -59,12 +71,15 @@ async def generate_source_summary(text: str) -> str | None:
 
             result = response.json()
             content = result.get("content", None)
+            output = None
             if content and isinstance(content, list):
                 for block in content:
                     if block.get("type") == "text":
-                        return block.get("text")
-            return None
-    except Exception:
+                        output = block.get("text")
+            generation.end(output=output)
+            return output
+    except Exception as e:
+        generation.end(error=str(e))
         return None
 
 
@@ -80,6 +95,13 @@ def _get_or_create_event_loop():
 @celery_app.task(bind=True)
 def index_source_task(self, source_id: str, source_type: str, url: str = None, file_path: str = None):
     """Index a source document into ChromaDB."""
+    langfuse = get_langfuse()
+    span = langfuse.span(
+        name="index_source_task",
+        input={"source_id": source_id, "source_type": source_type},
+        metadata={"celery_task_id": self.request.id}
+    )
+
     async def _index():
         from sqlalchemy import select
         from app.models.source import Source
@@ -117,7 +139,11 @@ def index_source_task(self, source_id: str, source_type: str, url: str = None, f
                     raise ValueError(f"Unknown source type: {source_type}")
 
                 # Step 1.5: Generate summary
-                summary = await generate_source_summary(raw_text or "")
+                summary = await generate_source_summary(
+                    raw_text or "",
+                    source_id=source_id,
+                    notebook_id=str(source.notebook_id)
+                )
 
                 # Step 2: Chunk text
                 chunks = chunk_text(raw_text or "")
@@ -178,4 +204,9 @@ def index_source_task(self, source_id: str, source_type: str, url: str = None, f
 
     # Use persistent event loop instead of asyncio.run()
     loop = _get_or_create_event_loop()
-    loop.run_until_complete(_index())
+    try:
+        loop.run_until_complete(_index())
+        span.end()
+    except Exception as e:
+        span.end(error=str(e))
+        raise

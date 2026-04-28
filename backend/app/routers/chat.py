@@ -1,3 +1,4 @@
+import asyncio
 import json
 from uuid import UUID
 
@@ -11,6 +12,7 @@ from app.models.user import User
 from app.schemas.chat import ChatMessageRequest, ChatMessageResponse
 from app.services import chat_service, rag_service, source_service
 from app.services.chat_service import stream_chat_response
+from app.evaluations.chat import evaluate_chat_message
 
 router = APIRouter(prefix="/notebooks/{notebook_id}/messages", tags=["chat"])
 
@@ -75,7 +77,8 @@ async def send_message(
             async for token in stream_chat_response(
                 notebook_id,
                 request.content,
-                request.selected_source_ids
+                request.selected_source_ids,
+                user_id=str(current_user.id)
             ):
                 if token.get("type") == "token":
                     content = token.get("content", "")
@@ -93,6 +96,10 @@ async def send_message(
                         )
                     )
                     yield f"data: {json.dumps({'type': 'done', 'message_id': str(assistant_msg.id)})}\n\n"
+                    # Fire-and-forget LLM-as-a-judge evaluation
+                    asyncio.create_task(
+                        evaluate_chat_message(str(assistant_msg.id), str(notebook_id))
+                    )
                 elif token.get("type") == "error":
                     yield f"data: {json.dumps({'type': 'error', 'content': token.get('content')})}\n\n"
         except Exception as e:
